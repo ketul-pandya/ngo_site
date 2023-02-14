@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    {% if user.is_authenticated %}
+    <div class="dropdown">
+        <button class="dropbtn">welcome {{request.user}}</button>
+        <div class="dropdown-content">
+            <a href="/logout">logout</a>
+        </div>
+    </div>
+    <button type="button">
+        <a href="/payment" id="buy_now_btn">payyy</a> </button>
+
+    {% else %}
+    <button type="button" style="color: red;">
+        <a class="nav-link" href="/login" style="color: red;">Login</a>
+    </button>
+
+    <button type="button">
+        <a class="nav-link" href="/signup" style="color: red;">Signup</a>
+    </button>
+    <!-- 
+    <button type="button" id="buy_now_btn" class="nav-link" style="color: red;">
+        <a class="nav-link" href="/payment" style="color: red;" id="buy_now_btn">payment</a>
+    </button> -->
+    {% endif %}
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe('{{stripe_public_key}}')
+        const buy_now_button = document.getElementById('buy_now_btn')
+        buy_now_button.addEventListener('click', event => {
+            stripe.redirectToCheckout({
+                sessionId: '{{session_id}}'
+            }).then(function (result) {
+                console.log(result)
+
+            });
+        })
+    </script>
+</body>
+
+</html>
